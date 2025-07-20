@@ -13,15 +13,20 @@ struct MyData {
 };
 
 void func(){
-    MyData data("临时数据");
-    throw 1;
+    MyData *heapData = new MyData("堆数据");
+    try {
+        throw 1;
+    }catch (...) {
+        throw heapData;  // 重新抛出异常
+    }
 }
 
 int main() {
     try {
         func();  // 调用可能抛异常的函数
-    } catch (int e) {  // 捕获int类型异常
-        cout << "捕获到异常: " << e << endl;
+    } catch (MyData *p) {  // 捕获int类型异常
+        cout << "捕获到异常: " << p->info << endl;
+        delete p;  // 释放堆内存
     } catch (...) {  // 捕获所有其他类型异常
         cout << "捕获到未知异常" << endl;
     }
